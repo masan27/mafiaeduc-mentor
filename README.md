@@ -1,8 +1,13 @@
-# React + Vite
+# Mafia Education Mentor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This is a web application that allows mentors to manage their class and schedule. It also allows mentors to create and have a student join their class. The application also allows students to view their class schedule and view their mentor's profile.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Versioning
+
+Mafia Education Mentor v1.0
+
+-   Node JS: v18.17.1
+-   NPM: v9.6.4
+-   React JS: ^18.2.0
