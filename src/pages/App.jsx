@@ -39,7 +39,7 @@ export default function App() {
                 theme='colored'
             />
 
-            {isLoading ? <ScreenLoading /> : <Router />}
+            {!!token && isLoading ? <ScreenLoading /> : <Router />}
         </>
     );
 }

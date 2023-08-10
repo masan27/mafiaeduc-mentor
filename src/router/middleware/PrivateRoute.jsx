@@ -1,17 +1,11 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
-export default function PrivateRoute({ isLoading, user, ...props }) {
+export default function PrivateRoute({ token, ...props }) {
     const location = useLocation();
 
-    if (!isLoading && !!user) {
-        return <Outlet {...props} />;
+    if (!token) {
+        return <Navigate to={'/login'} replace state={{ from: location }} />;
     } else {
-        return (
-            <Navigate
-                to={'/login'}
-                replace
-                state={{ from: location.pathname }}
-            />
-        );
+        return <Outlet {...props} />;
     }
 }

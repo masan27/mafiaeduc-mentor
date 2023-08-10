@@ -13,12 +13,13 @@ import {
 } from '@material-tailwind/react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function LoginPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [form, setForm] = useState({
         email: '',
@@ -47,8 +48,13 @@ export default function LoginPage() {
             const { token, mentor } = res;
             dispatch(login({ token, user: mentor }));
             dispatch(setToken(token));
-            navigate('/dashboard');
             clearForm();
+
+            if (location.state?.from) {
+                navigate(location.state.from);
+            } else {
+                navigate('/dashboard');
+            }
         },
         onError: (error) => {
             toast.error(error?.message);
