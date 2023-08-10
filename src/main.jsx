@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom/client';
 import App from './pages/App.jsx';
 
 import './styles/index.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { ThemeProvider } from '@material-tailwind/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
