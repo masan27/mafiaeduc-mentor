@@ -16,9 +16,12 @@ import {
 } from 'react-icons/md';
 import { BsFillCalendar2WeekFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getOpenSidebar } from '@/stores/reducers/animationSlice';
 
 export default function SideBar() {
     const navigate = useNavigate();
+    const isOpen = useSelector(getOpenSidebar);
     const [open, setOpen] = useState(0);
 
     const handleOpen = (value) => {
@@ -26,7 +29,11 @@ export default function SideBar() {
     };
 
     return (
-        <aside className={'w-80 bg-white text-black border-r h-screen'}>
+        <aside
+            className={`w-80 bg-white text-black border-r h-screen lg:visible lg:relative lg:left-0 ${
+                isOpen ? 'block' : 'hidden lg:block'
+            }`}
+        >
             <header className={'py-5'}>
                 <Typography variant={'h4'} className={'font-bold text-center'}>
                     Mentor Side

@@ -2,6 +2,7 @@ import useLogout from '@/hooks/useLogout';
 import { getUser, logout } from '@/stores/reducers/authSlice';
 import {
     Avatar,
+    IconButton,
     Menu,
     MenuHandler,
     MenuItem,
@@ -12,6 +13,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { HiOutlineMenuAlt2 } from 'react-icons/hi';
+import { toggleSidebar } from '@/stores/reducers/animationSlice';
 
 export default function Header() {
     const dispatch = useDispatch();
@@ -37,12 +40,25 @@ export default function Header() {
         mutate();
     };
 
+    const handleOpenSidebar = () => {
+        dispatch(toggleSidebar());
+    };
+
     return (
         <header
             className={
                 'w-full bg-white h-24 border-b border-gray-200 flexBetween px-8'
             }
         >
+            <IconButton
+                variant='outlined'
+                color='blue-gray'
+                className='block lg:hidden'
+                onClick={handleOpenSidebar}
+            >
+                <HiOutlineMenuAlt2 size={26} />
+            </IconButton>
+
             <div className={'ml-auto'}>
                 <Menu placement={'bottom-start'}>
                     <MenuHandler>
@@ -52,7 +68,7 @@ export default function Header() {
                                 alt={user?.full_name}
                                 src={user?.photo}
                             />
-                            <div className={'space-y-1'}>
+                            <div className={'space-y-1 hidden lg:block'}>
                                 <Typography
                                     variant='small'
                                     className='font-semibold'
