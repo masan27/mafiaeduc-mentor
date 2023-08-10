@@ -48,6 +48,7 @@ export default function LoginPage() {
             const { token, mentor } = res;
             dispatch(login({ token, user: mentor }));
             dispatch(setToken(token));
+            toast.success(data?.message);
             clearForm();
 
             if (location.state?.from) {

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import useUser from '@/hooks/apis/useUser';
 import { getToken } from '@/stores/reducers/authSlice';
 
 // Layouts
@@ -14,6 +15,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 
 export default function Router() {
     const token = useSelector(getToken);
+    const { data, isLoading } = useUser({ token });
 
     return (
         <Routes>
@@ -23,7 +25,7 @@ export default function Router() {
                 <Route path='login' element={<LoginPage />} />
             </Route>
 
-            <Route element={<PrivateRoute token={token} />}>
+            <Route element={<PrivateRoute isLoading={isLoading} user={data} />}>
                 <Route element={<DashboardLayout />}>
                     <Route path='/dashboard' element={<DashboardPage />} />
                 </Route>
