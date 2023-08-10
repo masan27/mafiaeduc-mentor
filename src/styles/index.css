@@ -1,1 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .flexCenter {
+        @apply flex justify-center items-center;
+    }
+
+    .flexBetween {
+        @apply flex justify-between items-center;
+    }
+
+    .flexAround {
+        @apply flex justify-around items-center;
+    }
+
+    .flexStart {
+        @apply flex justify-start items-center;
+    }
+
+    .flexEnd {
+        @apply flex justify-end items-center;
+    }
+
+    .flexColCenter {
+        @apply flex flex-col justify-center items-center;
+    }
+
+    .flexColBetween {
+        @apply flex flex-col justify-between items-center;
+    }
+}
