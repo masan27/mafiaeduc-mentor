@@ -1,7 +1,9 @@
+import Router from '@/router/Router';
+
 export default function App() {
     return (
         <>
-            <h1 className='text-center'>App</h1>
+            <Router />
         </>
     );
 }
