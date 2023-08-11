@@ -1,4 +1,4 @@
-import useLogout from '@/hooks/useLogout';
+import useLogout from '@/hooks/apis/useLogout';
 import { getUser, logout } from '@/stores/reducers/authSlice';
 import {
     Avatar,
@@ -85,7 +85,7 @@ export default function Header() {
                     <MenuList>
                         <MenuItem
                             className='flex items-center gap-2'
-                            onClick={() => navigate('/akun-saya')}
+                            onClick={() => navigate('/profile')}
                         >
                             <Typography variant='small' className='font-normal'>
                                 Akun Saya

@@ -12,6 +12,7 @@ import LoginPage from '@/pages/login/LoginPage';
 import DashboardPage from '@/pages/dashboard/DashboardPage';
 import PrivateRoute from './middleware/PrivateRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import ProfilePage from '@/pages/profiles/ProfilePage';
 
 export default function Router() {
     const token = useSelector(getToken);
@@ -28,6 +29,7 @@ export default function Router() {
             <Route element={<PrivateRoute isLoading={isLoading} user={data} />}>
                 <Route element={<DashboardLayout />}>
                     <Route path='/dashboard' element={<DashboardPage />} />
+                    <Route path='/profile' element={<ProfilePage />} />
                 </Route>
             </Route>
         </Routes>
