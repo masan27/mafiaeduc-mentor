@@ -71,8 +71,8 @@ export default function LoginPage() {
         <Card className='w-96'>
             <CardHeader
                 variant='gradient'
-                color='green'
-                className='mb-4 grid h-28 place-items-center'
+                color='blue'
+                className='grid mb-4 h-28 place-items-center'
             >
                 <Typography variant='h3' color='white'>
                     Sign In
@@ -114,7 +114,7 @@ export default function LoginPage() {
                     type='submit'
                     form='loginForm'
                     disabled={isLoading}
-                    className='flex justify-center items-center'
+                    className='flex items-center justify-center'
                 >
                     {isLoading ? (
                         <Spinner color='white' className='block' />

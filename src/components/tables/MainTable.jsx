@@ -4,29 +4,85 @@ import TableFilter from './TableFilter';
 import { MdAdd } from 'react-icons/md';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import TableLoading from './TableLoading';
-import { Button, ButtonGroup, Option, Select } from '@material-tailwind/react';
+import {
+    useReactTable,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFacetedMinMaxValues,
+    getPaginationRowModel,
+    getSortedRowModel,
+    flexRender,
+} from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
+import {
+    Button,
+    ButtonGroup,
+    Option,
+    Select,
+    Typography,
+} from '@material-tailwind/react';
 
-// eslint-disable-next-line react/prop-types
 export default function MainTable({
-    columns,
-    data,
     addAction,
-    noFilter,
-    isLoading,
-    pageSize,
-    setPageSize,
-    pageIndex,
-    pageCount,
-    nextPage,
-    previousPage,
+    nextPageAction,
+    prevPageAction,
     canPreviousPage,
     canNextPage,
+    pageIndex = 0,
+    pageCount = 1,
+    pageSize = 10,
+    setPageSize,
+    noFilter,
+    data = [],
+    columns = [],
+    filter = '',
+    setFilter,
+    isLoading,
 }) {
+    const [dataTable, setDataTable] = useState(() => [...data]);
+    const [columnFilters, setColumnFilters] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState('');
+
+    useEffect(() => {
+        if (data.length > 0) setDataTable(() => [...data]);
+    }, [data]);
+
+    const table = useReactTable({
+        data: dataTable,
+        columns,
+        state: {
+            columnFilters,
+            globalFilter,
+        },
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+        getFacetedMinMaxValues: getFacetedMinMaxValues(),
+        debugTable: false,
+        debugHeaders: false,
+        debugColumns: false,
+    });
+
+    useEffect(() => {
+        if (table.getState().columnFilters[0]?.id === 'fullName') {
+            if (table.getState().sorting[0]?.id !== 'fullName') {
+                table.setSorting([{ id: 'fullName', desc: false }]);
+            }
+        }
+    }, [table]);
+
     return (
-        <div className='px-4 py-2 overflow-x-auto'>
-            <div className='gap-2 mb-4 flexBetween'>
+        <div className='w-full h-full px-4 py-2 overflow-auto'>
+            <div className='gap-2 mb-6 flexBetween'>
                 {!noFilter && (
-                    <TableFilter filter={() => {}} setFilter={() => {}} />
+                    <TableFilter filter={filter} setFilter={setFilter} />
                 )}
 
                 {addAction && (
@@ -37,45 +93,87 @@ export default function MainTable({
                 )}
             </div>
 
-            <table className='min-w-full text-sm font-light text-left border-b table-auto border-slate-500'>
+            <table className='w-full text-left table-auto min-w-max'>
                 <thead>
-                    {columns?.map((headerGroup, i) => (
-                        <tr key={i}>
-                            {headerGroup?.map((column, i) => (
-                                <th key={i}>{column}</th>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => (
+                                <th
+                                    key={header.id}
+                                    className='border-b border-blue-gray-100 '
+                                >
+                                    {header.isPlaceholder ? null : (
+                                        <>
+                                            <div
+                                                {...{
+                                                    className:
+                                                        header.column.getCanSort() &&
+                                                        !isLoading
+                                                            ? 'cursor-pointer select-none p-4'
+                                                            : 'p-4',
+                                                    onClick: isLoading
+                                                        ? null
+                                                        : header.column.getToggleSortingHandler(),
+                                                }}
+                                            >
+                                                <Typography
+                                                    variant='small'
+                                                    color='blue-gray'
+                                                    className='font-normal leading-none opacity-70'
+                                                >
+                                                    {flexRender(
+                                                        header.column.columnDef
+                                                            .header,
+                                                        header.getContext()
+                                                    )}
+                                                    {{
+                                                        asc: ' 🔼',
+                                                        desc: ' 🔽',
+                                                    }[
+                                                        header.column.getIsSorted()
+                                                    ] ?? null}
+                                                </Typography>
+                                            </div>
+                                        </>
+                                    )}
+                                </th>
                             ))}
                         </tr>
                     ))}
                 </thead>
                 <tbody>
-                    {!isLoading && data?.length > 0 ? (
-                        data?.map((row, i) => {
-                            return (
-                                <tr key={i}>
-                                    {row?.map((cell, i) => {
-                                        return (
-                                            <td
-                                                key={i}
-                                                className={
-                                                    'border-b py-2 border-slate-700'
-                                                }
-                                            >
-                                                {cell}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            );
-                        })
-                    ) : isLoading ? (
+                    {isLoading ? (
                         <tr className='relative'>
                             <TableLoading />
                         </tr>
-                    ) : (
+                    ) : !isLoading &&
+                      table.getRowModel()?.rows?.length === 0 ? (
                         <tr className='relative'>
                             <TableNoData />
                         </tr>
-                    )}
+                    ) : !isLoading && table.getRowModel()?.rows?.length > 0 ? (
+                        table.getRowModel()?.rows?.map((row) => (
+                            <tr
+                                key={row.id}
+                                className='even:bg-blue-gray-50/50'
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                    <td key={cell.id} className='p-4'>
+                                        <Typography
+                                            variant='small'
+                                            color='blue-gray'
+                                            className='font-normal'
+                                        >
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </Typography>
+                                    </td>
+                                ))}
+                            </tr>
+                        ))
+                    ) : null}
                 </tbody>
             </table>
 
@@ -85,7 +183,7 @@ export default function MainTable({
                         <Select
                             size='md'
                             label='Rows per page'
-                            value={pageSize}
+                            value={String(pageSize)}
                             onChange={(e) => {
                                 setPageSize(Number(e.target.value));
                             }}
@@ -115,7 +213,7 @@ export default function MainTable({
                         variant={'outlined'}
                     >
                         <Button
-                            onClick={previousPage}
+                            onClick={prevPageAction}
                             size={'sm'}
                             color={'gray'}
                             variant={'outlined'}
@@ -125,7 +223,7 @@ export default function MainTable({
                         </Button>
 
                         <Button
-                            onClick={nextPage}
+                            onClick={nextPageAction}
                             size={'sm'}
                             color={'gray'}
                             variant={'outlined'}
