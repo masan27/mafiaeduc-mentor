@@ -127,6 +127,7 @@ export default function ProfileSection() {
                 <Button
                     color='blue'
                     variant='text'
+                    size='lg'
                     className='flex items-center gap-3'
                     onClick={() => photoRef.current.click()}
                 >
@@ -180,7 +181,6 @@ export default function ProfileSection() {
                         type='submit'
                         color='blue'
                         variant='filled'
-                        size='lg'
                         disabled={
                             isChangePhotoLoading || isUpdateProfileLoading
                         }

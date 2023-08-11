@@ -86,7 +86,6 @@ export default function ChangePasswordSection() {
                         type='submit'
                         color='blue'
                         variant='filled'
-                        size='lg'
                         disabled={isLoading}
                     >
                         {isLoading ? (
