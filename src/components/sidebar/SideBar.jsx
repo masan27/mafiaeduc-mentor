@@ -14,7 +14,10 @@ import {
     MdPayment,
     MdSpaceDashboard,
 } from 'react-icons/md';
-import { BsFillCalendar2WeekFill } from 'react-icons/bs';
+import {
+    BsFillCalendar2WeekFill,
+    BsFillCreditCard2FrontFill,
+} from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getOpenSidebar } from '@/stores/reducers/animationSlice';
@@ -28,137 +31,150 @@ export default function SideBar() {
         setOpen(open === value ? 0 : value);
     };
 
+    const menus = [
+        {
+            id: 1,
+            title: 'Dashboard',
+            icon: <MdSpaceDashboard size={24} />,
+            path: '/dashboard',
+            subMenus: [],
+        },
+        {
+            id: 2,
+            title: 'Private Class',
+            icon: <MdClass size={24} />,
+            path: '/private-class',
+            subMenus: [
+                {
+                    id: 1,
+                    title: 'Semua',
+                    icon: <BsFillCalendar2WeekFill size={24} />,
+                    path: '/private-class',
+                },
+                {
+                    id: 2,
+                    title: 'Buat Kelas',
+                    icon: <MdPayment size={24} />,
+                    path: '/private-class/create',
+                },
+            ],
+        },
+        {
+            id: 3,
+            title: 'Payment',
+            icon: <BsFillCreditCard2FrontFill size={24} />,
+            path: '/payments',
+            subMenus: [
+                {
+                    id: 1,
+                    title: 'Semua',
+                    icon: <BsFillCalendar2WeekFill size={24} />,
+                    path: '/payment-method',
+                },
+                {
+                    id: 1,
+                    title: 'Tambah Metode',
+                    icon: <BsFillCalendar2WeekFill size={24} />,
+                    path: '/payment-method/add',
+                },
+            ],
+        },
+    ];
+
     return (
         <aside
             className={`w-80 bg-white text-black border-r h-screen lg:visible lg:relative lg:left-0 ${
                 isOpen ? 'block' : 'hidden lg:block'
             }`}
         >
-            <header className={'py-5'}>
+            <header className={'py-5 border-b'}>
                 <Typography variant={'h4'} className={'font-bold text-center'}>
-                    Mentor Side
+                    Mentor Dashboard
                 </Typography>
                 <Typography variant={'small'} className={'text-center'}>
-                    Mafia Education Apllication
+                    Mafia Education Kenanga
                 </Typography>
             </header>
 
-            <main className={'mt-6 px-2'}>
+            <main className={'mt-10 px-2'}>
                 <List>
-                    <ListItem onClick={() => navigate('/')}>
-                        <ListItemPrefix>
-                            <MdSpaceDashboard size={24} />
-                        </ListItemPrefix>
-                        Dashboard
-                    </ListItem>
-                    <Accordion
-                        open={open === 1}
-                        icon={
-                            <MdOutlineKeyboardArrowUp
-                                size={22}
-                                className={`mx-auto transition-transform ${
-                                    open === 1 ? 'rotate-180' : ''
-                                }`}
-                            />
-                        }
-                    >
-                        <ListItem className='p-0' selected={open === 1}>
-                            <AccordionHeader
-                                onClick={() => handleOpen(1)}
-                                className='border-b-0 p-3'
-                            >
-                                <ListItemPrefix>
-                                    <MdClass size={24} />
-                                </ListItemPrefix>
-                                <Typography
-                                    color='blue-gray'
-                                    className='mr-auto font-normal'
-                                >
-                                    Kelas Private
-                                </Typography>
-                            </AccordionHeader>
-                        </ListItem>
-                        <AccordionBody className='py-1'>
-                            <List className='p-0 text-sm bg-gray-50'>
-                                <ListItem
-                                    className={'border-b last:border-none'}
-                                    onClick={() => navigate('/kelas-private')}
-                                >
-                                    {/*<ListItemPrefix>*/}
-                                    {/*	<ChevronRightIcon strokeWidth={3} className="h-3 w-5" />*/}
-                                    {/*</ListItemPrefix>*/}
-                                    Lihat Kelas
-                                </ListItem>
-                                <ListItem
-                                    className={'border-b last:border-none'}
-                                    onClick={() =>
-                                        navigate('/kelas-private/buat')
+                    {menus.map((menu) => {
+                        if (menu.subMenus.length > 0) {
+                            return (
+                                <Accordion
+                                    key={menu.id}
+                                    open={open === menu.id}
+                                    icon={
+                                        <MdOutlineKeyboardArrowUp
+                                            size={22}
+                                            className={`mx-auto transition-transform ${
+                                                open === menu.id
+                                                    ? 'rotate-180'
+                                                    : ''
+                                            }`}
+                                        />
                                     }
                                 >
-                                    {/*<ListItemPrefix>*/}
-                                    {/*	<ChevronRightIcon strokeWidth={3} className="h-3 w-5" />*/}
-                                    {/*</ListItemPrefix>*/}
-                                    Buat Kelas
+                                    <ListItem
+                                        className='p-0'
+                                        selected={open === menu.id}
+                                    >
+                                        <AccordionHeader
+                                            onClick={() => handleOpen(menu.id)}
+                                            className='p-3 border-b-0'
+                                        >
+                                            <ListItemPrefix>
+                                                {menu.icon}
+                                            </ListItemPrefix>
+                                            <Typography
+                                                color='blue-gray'
+                                                className='mr-auto font-normal'
+                                                variant={'small'}
+                                            >
+                                                {menu.title}
+                                            </Typography>
+                                        </AccordionHeader>
+                                    </ListItem>
+                                    <AccordionBody className='py-1'>
+                                        <List className='p-0 text-sm bg-gray-50'>
+                                            {menu.subMenus.map((subMenu, i) => (
+                                                <ListItem
+                                                    className={
+                                                        'border-b last:border-none'
+                                                    }
+                                                    key={i}
+                                                    onClick={() =>
+                                                        navigate(subMenu.path)
+                                                    }
+                                                >
+                                                    {/* <ListItemPrefix>
+                                                        {subMenu.icon}
+                                                    </ListItemPrefix> */}
+                                                    <Typography
+                                                        variant={'small'}
+                                                    >
+                                                        {subMenu.title}
+                                                    </Typography>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </AccordionBody>
+                                </Accordion>
+                            );
+                        } else {
+                            return (
+                                <ListItem
+                                    key={menu.id}
+                                    onClick={() => navigate(menu.path)}
+                                >
+                                    <ListItemPrefix>{menu.icon}</ListItemPrefix>
+                                    <Typography variant={'small'}>
+                                        {menu.title}
+                                    </Typography>
                                 </ListItem>
-                            </List>
-                        </AccordionBody>
-                    </Accordion>
-                    <Accordion
-                        open={open === 2}
-                        icon={
-                            <MdOutlineKeyboardArrowUp
-                                size={22}
-                                className={`mx-auto transition-transform ${
-                                    open === 2 ? 'rotate-180' : ''
-                                }`}
-                            />
+                            );
                         }
-                    >
-                        <ListItem className='p-0' selected={open === 2}>
-                            <AccordionHeader
-                                onClick={() => handleOpen(2)}
-                                className='border-b-0 p-3'
-                            >
-                                <ListItemPrefix>
-                                    <BsFillCalendar2WeekFill size={18} />
-                                </ListItemPrefix>
-                                <Typography
-                                    color='blue-gray'
-                                    className='mr-auto font-normal'
-                                >
-                                    Jadwal
-                                </Typography>
-                            </AccordionHeader>
-                        </ListItem>
-                        <AccordionBody className='py-1'>
-                            <List className='p-0 text-sm bg-gray-50'>
-                                <ListItem
-                                    className={'border-b last:border-none'}
-                                    onClick={() => navigate('/jadwal')}
-                                >
-                                    {/*<ListItemPrefix>*/}
-                                    {/*	<ChevronRightIcon strokeWidth={3} className="h-3 w-5" />*/}
-                                    {/*</ListItemPrefix>*/}
-                                    Lihat Jadwal
-                                </ListItem>
-                                <ListItem
-                                    className={'border-b last:border-none'}
-                                    onClick={() => navigate('/jadwal/buat')}
-                                >
-                                    {/*<ListItemPrefix>*/}
-                                    {/*	<ChevronRightIcon strokeWidth={3} className="h-3 w-5" />*/}
-                                    {/*</ListItemPrefix>*/}
-                                    Buat Jadwal
-                                </ListItem>
-                            </List>
-                        </AccordionBody>
-                    </Accordion>
-                    <ListItem onClick={() => navigate('/pembayaran')}>
-                        <ListItemPrefix>
-                            <MdPayment size={24} />
-                        </ListItemPrefix>
-                        Pembayaran
-                    </ListItem>
+                    })}
                 </List>
             </main>
         </aside>

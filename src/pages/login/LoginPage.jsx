@@ -1,5 +1,6 @@
 import useLogin from '@/hooks/apis/useLogin';
 import { login, setToken } from '@/stores/reducers/authSlice';
+import { formatCapitalize } from '@/utils/formaters';
 import {
     Button,
     Card,
@@ -48,7 +49,7 @@ export default function LoginPage() {
             const { token, mentor } = res;
             dispatch(login({ token, user: mentor }));
             dispatch(setToken(token));
-            toast.success(data?.message);
+            toast.success(formatCapitalize(data?.message));
             clearForm();
 
             if (location.state?.from) {
@@ -57,8 +58,8 @@ export default function LoginPage() {
                 navigate('/dashboard');
             }
         },
-        onError: (error) => {
-            toast.error(error?.message);
+        onError: (err) => {
+            toast.error(formatCapitalize(err?.message));
         },
     });
 

@@ -6,8 +6,21 @@ import { MdAssignmentAdd, MdAssignmentTurnedIn } from 'react-icons/md';
 import SectionWrapper from '@/components/wrappers/SectionWrapper';
 import MainTable from '@/components/tables/MainTable';
 import { useMemo } from 'react';
+import useStats from '@/hooks/apis/useStats';
+import useRecentSchedules from '@/hooks/apis/useRecentSchedules';
+import { useSelector } from 'react-redux';
+import { getUser } from '@/stores/reducers/authSlice';
 
 export default function DashboardPage() {
+    const user = useSelector(getUser);
+
+    const { data: statsData, isLoading: isStatsLoading } = useStats();
+
+    const { data: recentSchedules, isLoading: isRecentSchedulesLoading } =
+        useRecentSchedules({ user });
+
+    console.log(recentSchedules);
+
     const rows = useMemo(
         () => [
             {
@@ -73,36 +86,44 @@ export default function DashboardPage() {
             <section className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-4'>
                 <ProgressStat
                     title={'Kelas Private'}
-                    value={'0'}
+                    value={statsData?.total_private_class || '0'}
                     icon={<FaBookReader size={26} />}
                     color={'bg-red-500'}
+                    isLoading={isStatsLoading}
                 />
                 <ProgressStat
                     title={'Jadwal'}
-                    value={'0'}
+                    value={statsData?.total_scheduled_class || '0'}
                     icon={<BsFillCalendar2CheckFill size={20} />}
                     color={'bg-blue-500'}
+                    isLoading={isStatsLoading}
                 />
                 <ProgressStat
                     title={'Pemesanan'}
-                    value={'0'}
+                    value={statsData?.total_order || '0'}
                     icon={<MdAssignmentAdd size={26} />}
                     color={'bg-cyan-500'}
+                    isLoading={isStatsLoading}
                 />
                 <ProgressStat
                     title={'Kelas Selesai'}
-                    value={'0'}
+                    value={statsData?.total_finished_class || '0'}
                     icon={<MdAssignmentTurnedIn size={26} />}
                     color={' bg-green-500'}
+                    isLoading={isStatsLoading}
                 />
             </section>
 
             <SectionWrapper
-                title='Pemesanan Terkini'
-                subTitle='Table ini menampilkan pemesanan terkini'
+                title='Jadwal Terkini'
+                subTitle='Table ini menampilkan jadwal yang akan datang'
                 wrapperClassName='mt-8'
             >
-                <MainTable rows={rows} columns={columns} isLoading={true} />
+                <MainTable
+                    rows={rows}
+                    columns={columns}
+                    isLoading={isRecentSchedulesLoading}
+                />
             </SectionWrapper>
         </>
     );

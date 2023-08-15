@@ -1,5 +1,6 @@
 import SectionWrapper from '@/components/wrappers/SectionWrapper';
 import useChangePassword from '@/hooks/apis/useChangePassword';
+import { formatCapitalize } from '@/utils/formaters';
 import { Button, Input, Spinner } from '@material-tailwind/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -17,14 +18,14 @@ export default function ChangePasswordSection() {
     };
 
     const handleOnSuccess = (res) => {
-        toast.success(res?.message);
+        toast.success(formatCapitalize(res?.message));
     };
 
     const handleOnError = (err) => {
-        toast.error(err?.message);
+        toast.error(formatCapitalize(err?.message));
     };
 
-    const { mutate, isLoading } = useChangePassword({
+    const { mutate, isLoading, isError } = useChangePassword({
         onSuccess: handleOnSuccess,
         onError: handleOnError,
     });
@@ -58,6 +59,7 @@ export default function ChangePasswordSection() {
                         value={form?.oldPassword}
                         onChange={handleChange}
                         required
+                        error={isError}
                     />
                     <Input
                         size='lg'
@@ -68,6 +70,7 @@ export default function ChangePasswordSection() {
                         value={form?.newPassword}
                         onChange={handleChange}
                         required
+                        error={isError}
                     />
                     <Input
                         size='lg'
@@ -78,6 +81,7 @@ export default function ChangePasswordSection() {
                         value={form?.confirmPassword}
                         onChange={handleChange}
                         required
+                        error={isError}
                     />
                 </main>
 

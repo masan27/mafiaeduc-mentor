@@ -30,15 +30,14 @@ export default function MainTable({
     prevPageAction,
     canPreviousPage,
     canNextPage,
-    pageIndex = 0,
+    currentPage = 1,
     pageCount = 1,
-    pageSize = 10,
+    pageSize = '10',
     setPageSize,
-    noFilter,
     data = [],
     columns = [],
-    filter = '',
-    setFilter,
+    search = '',
+    setSearch,
     isLoading,
 }) {
     const [dataTable, setDataTable] = useState(() => [...data]);
@@ -46,7 +45,7 @@ export default function MainTable({
     const [globalFilter, setGlobalFilter] = useState('');
 
     useEffect(() => {
-        if (data.length > 0) setDataTable(() => [...data]);
+        setDataTable(() => [...data]);
     }, [data]);
 
     const table = useReactTable({
@@ -80,26 +79,28 @@ export default function MainTable({
 
     return (
         <div className='w-full h-full px-4 py-2 overflow-auto'>
-            <div className='gap-2 mb-6 flexBetween'>
-                {!noFilter && (
-                    <TableFilter filter={filter} setFilter={setFilter} />
-                )}
+            {addAction || setSearch ? (
+                <div className='gap-2 mb-6 flexBetween'>
+                    {setSearch && (
+                        <TableFilter filter={search} setFilter={setSearch} />
+                    )}
 
-                {addAction && (
-                    <Button onClick={addAction} className='text-white'>
-                        <MdAdd size={16} />
-                        <span>Create</span>
-                    </Button>
-                )}
-            </div>
+                    {addAction && (
+                        <Button onClick={addAction} className='text-white'>
+                            <MdAdd size={16} />
+                            <span>Create</span>
+                        </Button>
+                    )}
+                </div>
+            ) : null}
 
             <table className='w-full text-left table-auto min-w-max'>
                 <thead>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
+                    {table.getHeaderGroups().map((headerGroup, index) => (
+                        <tr key={index}>
+                            {headerGroup.headers.map((header, index) => (
                                 <th
-                                    key={header.id}
+                                    key={index}
                                     className='border-b border-blue-gray-100 '
                                 >
                                     {header.isPlaceholder ? null : (
@@ -152,13 +153,10 @@ export default function MainTable({
                             <TableNoData />
                         </tr>
                     ) : !isLoading && table.getRowModel()?.rows?.length > 0 ? (
-                        table.getRowModel()?.rows?.map((row) => (
-                            <tr
-                                key={row.id}
-                                className='even:bg-blue-gray-50/50'
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className='p-4'>
+                        table.getRowModel()?.rows?.map((row, index) => (
+                            <tr key={index} className='even:bg-blue-gray-50/50'>
+                                {row.getVisibleCells().map((cell, index) => (
+                                    <td key={index} className='p-4'>
                                         <Typography
                                             variant='small'
                                             color='blue-gray'
@@ -178,18 +176,18 @@ export default function MainTable({
             </table>
 
             <div className='pt-14 flexBetween'>
-                <div className='gap-4 flexCenter'>
+                <div className='gap-4 flexCenter '>
                     <div>
                         <Select
                             size='md'
                             label='Rows per page'
-                            value={String(pageSize)}
-                            onChange={(e) => {
-                                setPageSize(Number(e.target.value));
+                            value={pageSize.toString()}
+                            onChange={(value) => {
+                                setPageSize(Number(value));
                             }}
                         >
-                            {[10, 20, 30, 40, 50].map((pageSize) => (
-                                <Option key={pageSize} value={String(pageSize)}>
+                            {[10, 20, 30, 40, 50].map((pageSize, index) => (
+                                <Option key={index} value={String(pageSize)}>
                                     {pageSize}
                                 </Option>
                             ))}
@@ -198,11 +196,11 @@ export default function MainTable({
                     <span className='text-sm'>entries</span>
                 </div>
                 <div className='gap-4 flexCenter'>
-                    <div className='flexCenter'>
+                    <div className='justify-end w-36 flexCenter'>
                         <span className='text-sm'>Page</span>
                         <span className='mx-2 text-sm'>
                             <strong>
-                                {pageIndex + 1} of {pageCount}
+                                {currentPage} of {pageCount}
                             </strong>
                         </span>
                         <span>|</span>

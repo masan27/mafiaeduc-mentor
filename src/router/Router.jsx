@@ -13,6 +13,10 @@ import DashboardPage from '@/pages/dashboard/DashboardPage';
 import PrivateRoute from './middleware/PrivateRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import ProfilePage from '@/pages/profiles/ProfilePage';
+import NotFound from '@/pages/notFound/NotFound';
+import PrivateClass from '@/pages/privateClass/PrivateClass';
+import CreatePrivateClass from '@/pages/privateClass/CreatePrivateClass';
+import EditPrivateClass from '@/pages/privateClass/EditPrivateClass';
 
 export default function Router() {
     const token = useSelector(getToken);
@@ -30,8 +34,20 @@ export default function Router() {
                 <Route element={<DashboardLayout />}>
                     <Route path='/dashboard' element={<DashboardPage />} />
                     <Route path='/profile' element={<ProfilePage />} />
+                    <Route path='/private-class' element={<PrivateClass />} />
+                    <Route
+                        path='/private-class/create'
+                        element={<CreatePrivateClass />}
+                    />
+                    <Route
+                        path='/private-class/edit/:id'
+                        element={<EditPrivateClass />}
+                    />
                 </Route>
+                <Route path='not-found' element={<NotFound />} />
             </Route>
+
+            <Route path='*' element={<NotFound />} />
         </Routes>
     );
 }

@@ -8,6 +8,7 @@ import useUpdateProfile from '@/hooks/apis/useUpdateProfile';
 import { toast } from 'react-toastify';
 import useChangePhoto from '@/hooks/apis/useChangePhoto';
 import { useQueryClient } from '@tanstack/react-query';
+import { formatCapitalize } from '@/utils/formaters';
 
 export default function ProfileSection() {
     const user = useSelector(getUser);
@@ -63,12 +64,12 @@ export default function ProfileSection() {
     const queryClient = useQueryClient();
 
     const handleOnSuccess = (res) => {
-        toast.success(res.message);
+        toast.success(formatCapitalize(res?.message));
         queryClient.invalidateQueries('user');
     };
 
     const handleOnError = (err) => {
-        toast.error(err.message);
+        toast.error(formatCapitalize(err?.message));
     };
 
     const { mutate: updateProfile, isLoading: isUpdateProfileLoading } =
