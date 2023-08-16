@@ -21,6 +21,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getOpenSidebar } from '@/stores/reducers/animationSlice';
+import { FaUserClock } from 'react-icons/fa';
 
 export default function SideBar() {
     const navigate = useNavigate();
@@ -41,6 +42,13 @@ export default function SideBar() {
         },
         {
             id: 2,
+            title: 'Order',
+            icon: <FaUserClock size={24} />,
+            path: '/order',
+            subMenus: [],
+        },
+        {
+            id: 3,
             title: 'Private Class',
             icon: <MdClass size={24} />,
             path: '/private-class',
@@ -60,7 +68,7 @@ export default function SideBar() {
             ],
         },
         {
-            id: 3,
+            id: 4,
             title: 'Payment',
             icon: <BsFillCreditCard2FrontFill size={24} />,
             path: '/payments',

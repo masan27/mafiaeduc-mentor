@@ -45,7 +45,7 @@ export default function MainTable({
     const [globalFilter, setGlobalFilter] = useState('');
 
     useEffect(() => {
-        setDataTable(() => [...data]);
+        setDataTable(data);
     }, [data]);
 
     const table = useReactTable({
@@ -86,8 +86,13 @@ export default function MainTable({
                     )}
 
                     {addAction && (
-                        <Button onClick={addAction} className='text-white'>
-                            <MdAdd size={16} />
+                        <Button
+                            onClick={addAction}
+                            variant='filled'
+                            color='green'
+                            className='flex items-center gap-2 ml-auto text-white'
+                        >
+                            <MdAdd size={18} />
                             <span>Create</span>
                         </Button>
                     )}

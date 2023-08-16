@@ -17,6 +17,7 @@ import NotFound from '@/pages/notFound/NotFound';
 import PrivateClass from '@/pages/privateClass/PrivateClass';
 import CreatePrivateClass from '@/pages/privateClass/CreatePrivateClass';
 import EditPrivateClass from '@/pages/privateClass/EditPrivateClass';
+import OrderPage from '@/pages/orders/OrderPage';
 
 export default function Router() {
     const token = useSelector(getToken);
@@ -33,6 +34,7 @@ export default function Router() {
             <Route element={<PrivateRoute isLoading={isLoading} user={data} />}>
                 <Route element={<DashboardLayout />}>
                     <Route path='/dashboard' element={<DashboardPage />} />
+                    <Route path='/order' element={<OrderPage />} />
                     <Route path='/profile' element={<ProfilePage />} />
                     <Route path='/private-class' element={<PrivateClass />} />
                     <Route

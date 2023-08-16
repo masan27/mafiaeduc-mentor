@@ -22,6 +22,19 @@ export const getAllPrivateClassApi = async ({ count, page, search }) => {
     }
 };
 
+export const getAllPrivateClassOrderApi = async ({ count, page, search }) => {
+    try {
+        const res = await api.get(
+            `private-classes/orders?page=${page}${
+                count ? `&count=${count}` : ''
+            }${search ? `&search=${search}` : ''}`
+        );
+        return res.data;
+    } catch (e) {
+        throw new Error(e.response.data.message);
+    }
+};
+
 export const deletePrivateClassApi = async (classId) => {
     try {
         const res = await api.delete(`private-classes/${classId}`);
