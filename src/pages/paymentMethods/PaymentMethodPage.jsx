@@ -1,5 +1,6 @@
 import {
     addPaymentMethods,
+    deletePaymentMethods,
     getAllPaymentMethods,
     getGlobalPaymentMethods,
 } from '@/api/paymentMethodApi';
@@ -23,6 +24,7 @@ import { useMemo, useState } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { PiWarningBold } from 'react-icons/pi';
+import { toast } from 'react-toastify';
 
 export default function PaymentMethodPage() {
     const [search, setSearch] = useState('');
@@ -37,10 +39,6 @@ export default function PaymentMethodPage() {
             select: (data) => data.data,
         }
     );
-
-    const handleOpenDeleteDialog = (id) => {
-        console.log(id);
-    };
 
     const rows = useMemo(
         () =>
@@ -80,9 +78,16 @@ export default function PaymentMethodPage() {
                 <span className='flex items-center space-x-4'>
                     <IconButton
                         color='red'
-                        onClick={() => handleOpenDeleteDialog(info.getValue())}
+                        onClick={() =>
+                            handleOpenDeleteDialogAction(info.getValue())
+                        }
+                        disabled={isDeleteLoading}
                     >
-                        <FaTrashAlt size={14} />
+                        {isDeleteLoading ? (
+                            <Spinner color='white' size={'sm'} />
+                        ) : (
+                            <FaTrashAlt size={16} />
+                        )}
                     </IconButton>
                 </span>
             ),
@@ -121,7 +126,11 @@ export default function PaymentMethodPage() {
         useMutation((data) => addPaymentMethods(data), {
             onSuccess: () => {
                 queryClient.invalidateQueries('paymentMethods');
+                toast.success('Berhasil menambahkan metode pembayaran!');
                 toggleOpenAddModal();
+            },
+            onError: (error) => {
+                toast.error(error?.message || 'Terjadi kesalahan!');
             },
         });
 
@@ -138,6 +147,34 @@ export default function PaymentMethodPage() {
         addPaymentMethod(payload);
     };
 
+    const { mutate: deleteAction, isLoading: isDeleteLoading } = useMutation(
+        deletePaymentMethods,
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('paymentMethods');
+                toast.success('Berhasil menghapus metode pembayaran!');
+                toggleOpenDeleteDialog();
+            },
+            onError: (error) => {
+                toast.error(error?.message || 'Terjadi kesalahan!');
+            },
+        }
+    );
+
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+
+    const toggleOpenDeleteDialog = () => setOpenDeleteDialog(!openDeleteDialog);
+
+    const handleOpenDeleteDialogAction = (id) => {
+        setSelectedId(id);
+        toggleOpenDeleteDialog();
+    };
+
+    const handleDeleteAction = () => {
+        deleteAction(selectedId);
+    };
+
     return (
         <>
             <SectionWrapper
@@ -150,13 +187,68 @@ export default function PaymentMethodPage() {
                     columns={columns}
                     isLoading={isLoading}
                     setSearch={setSearch}
-                    addAction={toggleOpenAddModal}
+                    addAction={
+                        paymentMethods?.length < 3 ? toggleOpenAddModal : false
+                    }
                 />
             </SectionWrapper>
 
+            <Dialog
+                open={openDeleteDialog}
+                handler={toggleOpenDeleteDialog}
+                size='xs'
+            >
+                <DialogHeader className='justify-between'>
+                    <Typography variant='h5' color='blue-gray'>
+                        Hapus Metode Pembayaran
+                    </Typography>
+                    <IconButton
+                        color='blue-gray'
+                        size='sm'
+                        variant='text'
+                        onClick={toggleOpenDeleteDialog}
+                    >
+                        <MdClose size={20} />
+                    </IconButton>
+                </DialogHeader>
+                <DialogBody
+                    divider
+                    className='grid gap-2 py-8 place-items-center'
+                >
+                    <Typography
+                        color='red'
+                        variant='lead'
+                        className={'text-center mx-10 '}
+                    >
+                        Anda yakin ingin menghapus metode pembayaran ini?
+                    </Typography>
+                </DialogBody>
+                <DialogFooter className='space-x-2'>
+                    <Button
+                        variant='text'
+                        color='blue-gray'
+                        onClick={toggleOpenDeleteDialog}
+                    >
+                        close
+                    </Button>
+                    <Button
+                        variant='filled'
+                        color='red'
+                        onClick={handleDeleteAction}
+                        disabled={isDeleteLoading}
+                    >
+                        {isDeleteLoading ? (
+                            <Spinner className='w-6 h-6' color='light-blue' />
+                        ) : (
+                            'Hapus'
+                        )}
+                    </Button>
+                </DialogFooter>
+            </Dialog>
+
             <Dialog open={openAddModal} handler={toggleOpenAddModal} size='sm'>
                 <div className='flex items-center justify-between'>
-                    <DialogHeader>Tambah Metode Pembayaran</DialogHeader>
+                    <DialogHeader>Metode Pembayaran</DialogHeader>
                     <IconButton
                         color='blue-gray'
                         size='sm'
@@ -173,8 +265,7 @@ export default function PaymentMethodPage() {
                             <Spinner color='blue' className='w-10 h-10' />
                         </div>
                     ) : !isGlobalPaymentMethodLoading &&
-                      globalPaymentMethods &&
-                      globalPaymentMethods?.length > 0 ? (
+                      globalPaymentMethods?.length === 0 ? (
                         <div className='flex flex-col items-center justify-center h-40 gap-4'>
                             <PiWarningBold size={50} color='#f44336' />
                             <Typography color='blue-gray' variant={'lead'}>
@@ -182,12 +273,11 @@ export default function PaymentMethodPage() {
                             </Typography>
                         </div>
                     ) : !isGlobalPaymentMethodLoading &&
-                      globalPaymentMethods &&
-                      globalPaymentMethods?.length === 0 ? (
+                      globalPaymentMethods?.length > 0 ? (
                         <form
                             onSubmit={handleAddAction}
                             id='addPaymentMethodForm'
-                            className='grid gap-6'
+                            className='grid gap-6 px-4 py-5'
                         >
                             <Select
                                 name='paymentMethodId'
@@ -203,9 +293,11 @@ export default function PaymentMethodPage() {
                                 {globalPaymentMethods?.map((item) => (
                                     <Option
                                         key={item?.id}
-                                        value={item?.id}
+                                        value={item?.id.toString()}
                                         label={item?.name}
-                                    />
+                                    >
+                                        {item?.name}
+                                    </Option>
                                 ))}
                             </Select>
 
@@ -253,7 +345,7 @@ export default function PaymentMethodPage() {
                         {isAddPaymentMethodLoading ? (
                             <Spinner color='white' size={'sm'} />
                         ) : (
-                            'Buat'
+                            'Tambah'
                         )}
                     </Button>
                 </DialogFooter>
