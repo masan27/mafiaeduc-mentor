@@ -75,16 +75,16 @@ export default function SideBar() {
             subMenus: [
                 {
                     id: 1,
-                    title: 'Semua',
+                    title: 'Metode Pembayaran',
                     icon: <BsFillCalendar2WeekFill size={24} />,
                     path: '/payment-method',
                 },
-                {
-                    id: 1,
-                    title: 'Tambah Metode',
-                    icon: <BsFillCalendar2WeekFill size={24} />,
-                    path: '/payment-method/add',
-                },
+                // {
+                //     id: 2,
+                //     title: 'Tambah Metode',
+                //     icon: <BsFillCalendar2WeekFill size={24} />,
+                //     path: '/payment-method/add',
+                // },
             ],
         },
     ];

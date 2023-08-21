@@ -25,14 +25,18 @@ import { BsCalendar2PlusFill } from 'react-icons/bs';
 import { MdClose } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { PiWarningBold } from 'react-icons/pi';
+import { formatRupiah } from '@/utils/helpers';
+import { useNavigate } from 'react-router-dom';
+import { FaEye } from 'react-icons/fa';
 
 export default function OrderPage() {
+    const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(10);
     const [search, setSearch] = useState('');
 
     const { data: orders, isLoading } = useQuery(
-        ['orders'],
+        ['orders', page, count, search],
         () =>
             getAllPrivateClassOrderApi({
                 page,
@@ -64,6 +68,10 @@ export default function OrderPage() {
         }
     };
 
+    const handleNavigateToEditClass = (classId) => {
+        navigate(`/private-class/edit/${classId}`);
+    };
+
     const rows = useMemo(
         () =>
             orders?.data?.length > 0
@@ -77,7 +85,10 @@ export default function OrderPage() {
                           item?.details[0]?.private_classes?.learning_method
                               ?.name,
                       grade: item?.details[0]?.private_classes?.grade?.name,
-                      salesDate: dateFormater(item?.sales_date),
+                      price: `Rp. ${formatRupiah(
+                          item?.details[0]?.sub_total || '0'
+                      )}`,
+                      salesDate: dateFormater(item?.sales_date, 'short'),
                   }))
                 : [],
         [orders]
@@ -87,10 +98,6 @@ export default function OrderPage() {
         {
             header: 'Sales ID',
             accessorKey: 'salesId',
-        },
-        {
-            header: 'Kelas ID',
-            accessorKey: 'privateClassId',
         },
         {
             header: 'Nama Pemesan',
@@ -105,12 +112,16 @@ export default function OrderPage() {
             accessorKey: 'subject',
         },
         {
-            header: 'Metode Pembelajaran',
+            header: 'Metode Belajar',
             accessorKey: 'learningMethod',
         },
         {
             header: 'Jenjang',
             accessorKey: 'grade',
+        },
+        {
+            header: 'Harga',
+            accessorKey: 'price',
         },
         {
             header: 'Tanggal Pemesanan',
@@ -121,6 +132,15 @@ export default function OrderPage() {
             accessorKey: 'privateClassId',
             cell: (info) => (
                 <span className='flex items-center space-x-4'>
+                    <IconButton
+                        color='blue'
+                        onClick={() =>
+                            handleNavigateToEditClass(info.getValue())
+                        }
+                        variant='outlined'
+                    >
+                        <FaEye size={18} />
+                    </IconButton>
                     <IconButton
                         color='green'
                         onClick={() => handleOpenAddModal(info.getValue())}

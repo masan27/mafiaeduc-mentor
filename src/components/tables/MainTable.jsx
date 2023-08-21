@@ -180,63 +180,68 @@ export default function MainTable({
                 </tbody>
             </table>
 
-            <div className='pt-14 flexBetween'>
-                <div className='gap-4 flexCenter '>
-                    <div>
-                        <Select
-                            size='md'
-                            label='Rows per page'
-                            value={pageSize.toString()}
-                            onChange={(value) => {
-                                setPageSize(Number(value));
-                            }}
-                        >
-                            {[10, 20, 30, 40, 50].map((pageSize, index) => (
-                                <Option key={index} value={String(pageSize)}>
-                                    {pageSize}
-                                </Option>
-                            ))}
-                        </Select>
+            {nextPageAction || prevPageAction || setPageSize ? (
+                <div className='pt-14 flexBetween'>
+                    <div className='gap-4 flexCenter '>
+                        <div>
+                            <Select
+                                size='md'
+                                label='Rows per page'
+                                value={pageSize.toString()}
+                                onChange={(value) => {
+                                    setPageSize(Number(value));
+                                }}
+                            >
+                                {[10, 20, 30, 40, 50].map((pageSize, index) => (
+                                    <Option
+                                        key={index}
+                                        value={String(pageSize)}
+                                    >
+                                        {pageSize}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </div>
+                        <span className='text-sm'>entries</span>
                     </div>
-                    <span className='text-sm'>entries</span>
-                </div>
-                <div className='gap-4 flexCenter'>
-                    <div className='justify-end w-36 flexCenter'>
-                        <span className='text-sm'>Page</span>
-                        <span className='mx-2 text-sm'>
-                            <strong>
-                                {currentPage} of {pageCount}
-                            </strong>
-                        </span>
-                        <span>|</span>
-                    </div>
-                    <ButtonGroup
-                        size={'sm'}
-                        color={'gray'}
-                        variant={'outlined'}
-                    >
-                        <Button
-                            onClick={prevPageAction}
+                    <div className='gap-4 flexCenter'>
+                        <div className='justify-end w-36 flexCenter'>
+                            <span className='text-sm'>Page</span>
+                            <span className='mx-2 text-sm'>
+                                <strong>
+                                    {currentPage} of {pageCount}
+                                </strong>
+                            </span>
+                            <span>|</span>
+                        </div>
+                        <ButtonGroup
                             size={'sm'}
                             color={'gray'}
                             variant={'outlined'}
-                            disabled={!canPreviousPage}
                         >
-                            <HiChevronLeft size={20} />
-                        </Button>
+                            <Button
+                                onClick={prevPageAction}
+                                size={'sm'}
+                                color={'gray'}
+                                variant={'outlined'}
+                                disabled={!canPreviousPage}
+                            >
+                                <HiChevronLeft size={20} />
+                            </Button>
 
-                        <Button
-                            onClick={nextPageAction}
-                            size={'sm'}
-                            color={'gray'}
-                            variant={'outlined'}
-                            disabled={!canNextPage}
-                        >
-                            <HiChevronRight size={20} />
-                        </Button>
-                    </ButtonGroup>
+                            <Button
+                                onClick={nextPageAction}
+                                size={'sm'}
+                                color={'gray'}
+                                variant={'outlined'}
+                                disabled={!canNextPage}
+                            >
+                                <HiChevronRight size={20} />
+                            </Button>
+                        </ButtonGroup>
+                    </div>
                 </div>
-            </div>
+            ) : null}
         </div>
     );
 }

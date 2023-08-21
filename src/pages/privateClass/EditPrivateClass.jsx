@@ -202,7 +202,7 @@ export default function EditPrivateClass() {
                       //   subject: item?.subject?.name,
                       //   grade: item?.grade?.name,
                       date: dateFormater(item?.date),
-                      time: item?.time,
+                      time: `${item?.time} WIB`,
                       learningMethod: item?.learning_method?.name,
                   }))
                 : [],

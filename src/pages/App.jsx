@@ -28,6 +28,9 @@ export default function App() {
         <>
             <ToastContainer
                 position='bottom-right'
+                style={{
+                    zIndex: 99999,
+                }}
                 autoClose={5000}
                 hideProgressBar={false}
                 newestOnTop={false}

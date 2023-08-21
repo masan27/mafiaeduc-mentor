@@ -60,7 +60,7 @@ export default function DashboardPage() {
                       learningMethod: item?.learning_method?.name,
                       grade: item?.grade?.name,
                       date: dateFormater(item?.date),
-                      time: item?.time,
+                      time: `${item?.time} WIB`,
                   }))
                 : [],
         [recentSchedules]

@@ -18,6 +18,7 @@ import PrivateClass from '@/pages/privateClass/PrivateClass';
 import CreatePrivateClass from '@/pages/privateClass/CreatePrivateClass';
 import EditPrivateClass from '@/pages/privateClass/EditPrivateClass';
 import OrderPage from '@/pages/orders/OrderPage';
+import PaymentMethodPage from '@/pages/paymentMethods/PaymentMethodPage';
 
 export default function Router() {
     const token = useSelector(getToken);
@@ -44,6 +45,10 @@ export default function Router() {
                     <Route
                         path='/private-class/edit/:id'
                         element={<EditPrivateClass />}
+                    />
+                    <Route
+                        path='/payment-method'
+                        element={<PaymentMethodPage />}
                     />
                 </Route>
                 <Route path='not-found' element={<NotFound />} />
