@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ENV = import.meta.env.MODE;
+const ENV = import.meta.env.VITE_MODE_ENV;
 const LOCAL_URL = import.meta.env.VITE_API_LOCAL_URL;
 const PROD_URL = import.meta.env.VITE_API_PROD_URL;
 
